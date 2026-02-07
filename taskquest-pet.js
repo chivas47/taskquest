@@ -80,7 +80,7 @@ let tasks = JSON.parse(localStorage.getItem('taskQuestTasks')) || [];
  */
 const petEvolutions = [
     { stage: 0, emoji: '🥚', name: 'Mysterious Egg', mood: 'Waiting to hatch...', minLevel: 1 },
-    { stage: 1, emoji: '🐣', name: 'Baby Chick', mood: 'Chirp chirp!', minLevel: 1 },
+    { stage: 1, emoji: '🐣', name: 'Baby Chick', mood: 'Chirp chirp!', minLevel: 2 },
     { stage: 2, emoji: '🐥', name: 'Young Bird', mood: 'Feeling playful!', minLevel: 5 },
     { stage: 3, emoji: '🐦', name: 'Teen Bird', mood: 'Getting stronger!', minLevel: 10 },
     { stage: 4, emoji: '🦅', name: 'Mighty Eagle', mood: 'Soaring high!', minLevel: 15 },
