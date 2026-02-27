@@ -39,18 +39,23 @@
  */
 body {
     /* Typography */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
     
-    /* Background Gradient
-     * linear-gradient creates smooth color transition
-     * 135deg = diagonal from top-left to bottom-right
-     * Color stops: purple (#667eea) to pink (#764ba2)
-     */
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* Modern Gradient Background */
+    background: linear-gradient(135deg, #667eea 0%, #a78bfa 50%, #f097c6 100%);
+    background-attachment: fixed;  /* Gradient stays fixed while scrolling */
     
     /* Layout */
     min-height: 100vh;   /* Minimum height = 100% of viewport height */
-    padding: 20px;       /* Inner spacing around all content */
+    padding: 16px;       /* Mobile-first smaller padding */
+    margin: 0;
+    overflow-x: hidden;  /* Prevent horizontal scroll */
+}
+
+@media (min-width: 768px) {
+    body {
+        padding: 24px;   /* Larger padding on desktop */
+    }
 }
 
 /* ==========================================
@@ -60,36 +65,54 @@ body {
 /**
  * Main Container
  * Centers content and limits maximum width for readability
- * Best practice: Content shouldn't exceed 900-1200px for optimal reading
+ * Mobile-first: Full width with padding, desktop: max-width
  */
 .container {
+    width: 100%;
     max-width: 900px;    /* Maximum width constraint */
     margin: 0 auto;      /* Center horizontally (0 top/bottom, auto left/right) */
+    box-sizing: border-box;  /* Include padding in width calculation */
 }
 
 /**
  * Header Section
- * Contains app title and tagline
+ * Contains app title and tagline with modern styling
  */
 header {
     text-align: center;  /* Center all text content */
     color: white;        /* White text on gradient background */
-    margin-bottom: 30px; /* Space below header */
+    margin-bottom: 24px; /* Space below header */
+    animation: slideDown 0.6s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /**
  * Main Heading (H1)
- * Large, prominent title with shadow for depth
+ * Large, prominent title with modern shadow
  */
 header h1 {
-    font-size: 2.5em;    /* 2.5x the base font size (usually 16px = 40px) */
-    margin-bottom: 10px;
-    
-    /* Text Shadow for 3D Effect
-     * Syntax: x-offset y-offset blur-radius color
-     * Creates depth by adding shadow behind text
-     */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    font-size: clamp(2em, 10vw, 3em);  /* Responsive font size */
+    margin-bottom: 8px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+header p {
+    font-size: clamp(1em, 4vw, 1.2em);
+    opacity: 0.95;
+    font-weight: 500;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
 /* ==========================================
@@ -98,24 +121,37 @@ header h1 {
 
 /**
  * Pet Container Card
- * White card that houses the interactive pet display
- * Uses modern card design pattern with shadow for elevation
+ * White card that houses the interactive pet display with modern design
  */
 .pet-container {
     background: white;
-    border-radius: 20px;  /* Rounded corners (larger = more rounded) */
-    padding: 30px;
+    border-radius: 24px;  /* Larger radius for modern look */
+    padding: clamp(20px, 5vw, 40px);  /* Responsive padding */
     margin-bottom: 20px;
     
-    /* Box Shadow creates "floating" effect
-     * Syntax: x y blur spread color
-     * 0 10px 30px = shadow 10px down, 30px blur
-     */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    /* Modern shadow with multiple layers */
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 
+                0 0 1px rgba(0,0,0,0.05);
     
     text-align: center;
-    position: relative;   /* Enables absolute positioning of children */
-    overflow: hidden;     /* Clips content that extends beyond boundaries */
+    position: relative;
+    overflow: hidden;
+    
+    /* Subtle gradient background */
+    background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+    
+    animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /**
@@ -143,112 +179,156 @@ header h1 {
 
 /**
  * Pet Display - Main Interactive Element
- * Shows the pet emoji with hover and animation effects
- * Students: This is the central interactive element users click
+ * Shows the pet emoji with enhanced interactions and feedback
  */
 .pet-display {
-    font-size: 120px;     /* Very large for visual prominence */
+    font-size: clamp(80px, 25vw, 160px);  /* Responsive pet size */
     margin: 20px 0;
     
-    /* Animation
-     * animation: name duration timing-function iteration-count
-     * petIdle = keyframe name (defined below)
-     * 3s = 3 seconds per cycle
-     * ease-in-out = smooth acceleration/deceleration
-     * infinite = never stops
-     */
+    /* Smooth idle animation */
     animation: petIdle 3s ease-in-out infinite;
     
-    cursor: pointer;      /* Show hand cursor on hover (indicates clickable) */
-    transition: transform 0.3s;  /* Smooth 0.3s transition for transform changes */
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);  /* Bouncy easing */
+    
+    /* Add subtle glow effect */
+    filter: drop-shadow(0 5px 15px rgba(102, 126, 234, 0.2));
 }
 
 /**
  * Pet Hover Effect
- * Enlarges pet slightly when mouse hovers over it
- * Provides visual feedback that element is interactive
+ * Enhanced hover feedback with scale and glow
  */
 .pet-display:hover {
-    transform: scale(1.1);  /* Scale to 110% of original size */
+    transform: scale(1.15) translateY(-5px);
+    filter: drop-shadow(0 10px 25px rgba(102, 126, 234, 0.4));
+}
+
+/**
+ * Pet Active (Clicked) State
+ */
+.pet-display:active {
+    transform: scale(0.95);
+}
+
+/**
+ * Hibernating State
+ * Pet appears sleepy and grayed out
+ */
+.pet-display.hibernating {
+    animation: sleeping 2s ease-in-out infinite;
+    filter: grayscale(60%) opacity(0.85);
+}
+
+/**
+ * Sleeping Animation
+ * Gentle breathing motion
+ */
+@keyframes sleeping {
+    0%, 100% {
+        transform: translateY(0) scale(0.95);
+        opacity: 0.85;
+    }
+    50% {
+        transform: translateY(-8px) scale(1);
+        opacity: 0.75;
+    }
+}
+
+/**
+ * Waking Animation
+ * Pet wakes up with a stretch
+ */
+.pet-display.waking {
+    animation: wakeUp 0.8s ease-out;
 }
 
 /**
  * Idle Animation Keyframes
  * Creates gentle floating/bobbing motion when pet is idle
- * 
- * @keyframes defines the animation sequence
- * Percentages represent points in the animation timeline
  */
 @keyframes petIdle {
-    /* Start and end at same position (creates loop) */
     0%, 100% { 
-        transform: translateY(0px) rotate(0deg); 
+        transform: translateY(0px) rotate(0deg);
     }
-    
-    /* At 25% through animation */
     25% { 
-        transform: translateY(-10px) rotate(-5deg);  /* Move up 10px, tilt left 5° */
+        transform: translateY(-12px) rotate(-3deg);
     }
-    
-    /* At 75% through animation */
+    50% {
+        transform: translateY(-6px) rotate(0deg);
+    }
     75% { 
-        transform: translateY(-5px) rotate(5deg);    /* Move up 5px, tilt right 5° */
+        transform: translateY(-12px) rotate(3deg);
+    }
+}
+
+/**
+ * Happy Jump Animation
+ * More bouncy and energetic
+ */
+@keyframes petJump {
+    0%, 100% { 
+        transform: translateY(0) scale(1);
+    }
+    50% { 
+        transform: translateY(-40px) scale(1.2);
+    }
+}
+
+/**
+ * Evolve Animation
+ */
+@keyframes petEvolve {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    25% { 
+        transform: scale(1.3) rotate(180deg);
+        opacity: 0.6;
+    }
+    50% { 
+        transform: scale(0.5) rotate(360deg);
+        opacity: 0.4;
+    }
+    75% { 
+        transform: scale(1.3) rotate(540deg);
+        opacity: 0.6;
+    }
+}
+
+/**
+ * Wake Up Animation
+ * Pet stretches and yawns
+ */
+@keyframes wakeUp {
+    0% {
+        transform: scaleY(0.8) scaleX(0.95);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scaleY(1.15) scaleX(0.9);
+    }
+    100% {
+        transform: scaleY(1) scaleX(1);
+        opacity: 1;
     }
 }
 
 /**
  * Happy Animation Class
  * Applied via JavaScript when user pets the pet
- * Creates excited jumping motion
  */
 .pet-display.happy {
     animation: petJump 0.6s ease-in-out;
 }
 
 /**
- * Jump Animation Keyframes
- * Creates bouncing effect when pet is happy
- */
-@keyframes petJump {
-    0%, 100% { 
-        transform: translateY(0) scale(1);      /* Normal position and size */
-    }
-    50% { 
-        transform: translateY(-30px) scale(1.2); /* Jump up 30px, grow 20% */
-    }
-}
-
-/**
  * Evolution Animation Class
  * Applied during pet evolution (level milestones)
- * Creates dramatic spinning transformation effect
  */
 .pet-display.evolving {
     animation: petEvolve 1s ease-in-out;
-}
-
-/**
- * Evolution Animation Keyframes
- * Complex transformation with rotation and opacity changes
- * Simulates magical transformation effect
- */
-@keyframes petEvolve {
-    0%, 100% { 
-        transform: scale(1) rotate(0deg); 
-        opacity: 1;           /* Fully visible */
-    }
-    25% { 
-        transform: scale(1.3) rotate(180deg); 
-        opacity: 0.5;         /* Semi-transparent */
-    }
-    50% { 
-        transform: scale(0.5) rotate(360deg); 
-        opacity: 0.3;         /* More transparent */
-    }
-    75% { 
-        transform: scale(1.3) rotate(540deg); 
-        opacity: 0.5;
-    }
 }
 
 /**
@@ -275,55 +355,68 @@ header h1 {
 
 /**
  * Pet Stats Grid
- * Container for the three stat bars (Happiness, Energy, Hunger)
- * Uses CSS Grid for equal-width columns
+ * Container for the three stat bars with responsive layout
  */
 .pet-stats-grid {
-    display: grid;        /* Enable CSS Grid layout */
-    grid-template-columns: repeat(3, 1fr);  /* 3 equal columns (1fr = 1 fraction) */
-    gap: 10px;           /* Space between grid items */
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));  /* Responsive columns */
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid #f0f0f0;
 }
 
 /**
  * Individual Stat Display
- * Container for one stat (label + progress bar)
+ * Container for one stat with enhanced styling
  */
 .pet-stat {
-    background: #f8f9fa;  /* Very light gray */
-    padding: 10px;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #f0f2ff 100%);
+    padding: 16px;
+    border-radius: 16px;
+    border: 2px solid #e8ebff;
+    transition: all 0.3s ease;
+}
+
+.pet-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
 }
 
 /**
  * Stat Label
- * Shows stat name with emoji (💕 Happiness, ⚡ Energy, 🍔 Hunger)
+ * Shows stat name with emoji and better typography
  */
 .pet-stat-label {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /**
  * Stat Bar Container
- * Outer container for progress bar (background track)
+ * Outer container for progress bar with modern styling
  */
 .pet-stat-bar {
-    background: #e0e0e0;  /* Light gray background */
-    height: 8px;
-    border-radius: 4px;   /* Rounded ends */
-    overflow: hidden;     /* Clips the colored fill bar */
+    background: #e8ebff;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
 /**
  * Stat Bar Fill
- * Colored bar that grows/shrinks based on stat value
- * Width controlled via JavaScript (0-100%)
+ * Colored bar with smooth animations
  */
 .pet-stat-fill {
-    height: 100%;         /* Fill full height of container */
-    transition: width 0.5s ease;  /* Smooth width changes over 0.5s */
+    height: 100%;
+    transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);  /* Bouncy transition */
+    border-radius: 6px;
 }
 
 /**
@@ -357,219 +450,206 @@ header h1 {
 
 /**
  * Player Stats Card
- * White card containing level, XP bar, and streak information
+ * White card with modern design and better visual hierarchy
  */
 .player-stats {
     background: white;
-    border-radius: 20px;
-    padding: 20px;
+    border-radius: 24px;
+    padding: clamp(20px, 5vw, 30px);
     margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+    animation: fadeInUp 0.6s ease 0.2s both;
 }
 
 /**
  * Level Section
- * Container for level badge and XP bar
- * Uses Flexbox for horizontal layout
+ * Enhanced layout with better spacing
  */
 .level-section {
-    display: flex;         /* Enable Flexbox layout */
-    align-items: center;   /* Vertically center items */
-    gap: 20px;            /* Space between flex items */
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
 /**
  * Level Badge
- * Circular badge showing current level number
- * Uses gradient background and pulsing animation
+ * More prominent with enhanced visual effects
  */
 .level-badge {
-    /* Styling */
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: linear-gradient(135deg, #667eea 0%, #a78bfa 100%);
     color: white;
     
-    /* Sizing - Fixed dimensions for perfect circle */
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;   /* 50% = perfect circle */
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
     
-    /* Flexbox for centering content */
     display: flex;
-    flex-direction: column;  /* Stack items vertically */
-    align-items: center;     /* Center horizontally */
-    justify-content: center; /* Center vertically */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     
     font-weight: bold;
-    box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
-    
-    /* Pulsing Animation */
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
     animation: pulse 2s infinite;
+    flex-shrink: 0;
 }
 
 /**
  * Pulse Animation
  * Gentle breathing effect for level badge
- * Creates subtle scale change to draw attention
  */
 @keyframes pulse {
     0%, 100% { 
-        transform: scale(1);      /* Normal size */
+        transform: scale(1);
     }
     50% { 
-        transform: scale(1.05);   /* Slightly larger (5% growth) */
+        transform: scale(1.08);
     }
 }
 
 /**
  * Level Number Text
- * Large number inside circular badge
+ * Large, bold number inside circular badge
  */
 .level-badge .level-number {
-    font-size: 32px;
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 900;
 }
 
 /**
  * "Level" Label Text
- * Small text below number in badge
  */
 .level-badge .level-text {
-    font-size: 10px;
-    text-transform: uppercase;  /* "level" → "LEVEL" */
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
 /**
  * Level Info Container
- * Contains level title and XP bar
- * flex: 1 makes it grow to fill available space
  */
 .level-info {
-    flex: 1;  /* Grow to fill remaining space in flex container */
+    flex: 1;
+    min-width: 200px;
 }
 
 /**
  * Level Title
- * Shows rank/title based on level (e.g., "Productivity Ninja")
  */
 .level-title {
-    font-size: 24px;
+    font-size: clamp(18px, 5vw, 28px);
     color: #667eea;
-    margin-bottom: 5px;
+    margin-bottom: 12px;
+    font-weight: 700;
 }
 
 /**
  * XP Bar Container
- * Outer container for experience progress bar
- * Similar to stat bars but larger
+ * Enhanced with better visual hierarchy
  */
 .xp-bar-container {
-    background: #e0e0e0;
-    height: 25px;
-    border-radius: 15px;
-    overflow: hidden;     /* Clips the progress bar */
-    position: relative;   /* For absolutely positioned children */
+    background: #e8ebff;
+    height: 32px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.08);
+    border: 2px solid #f0f2ff;
 }
 
 /**
  * XP Bar Fill
- * Colored bar showing XP progress toward next level
- * Width updated via JavaScript (0-100%)
+ * Smooth, bouncy animation
  */
 .xp-bar {
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: linear-gradient(90deg, #667eea, #a78bfa);
     height: 100%;
-    
-    /* Smooth Transitions
-     * When JavaScript changes width, animate the change
-     */
-    transition: width 0.5s ease;
-    
-    /* Absolute Positioning
-     * Positioned behind the text overlay
-     */
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: absolute;
     top: 0;
     left: 0;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
 }
 
 /**
  * XP Text Overlay
- * Shows "50 / 150 XP" text centered on progress bar
- * Uses advanced centering technique
+ * Better visibility and typography
  */
 .xp-text {
     position: absolute;
-    
-    /* Perfect Centering Technique
-     * Step 1: Move element 50% from top and left (of parent)
-     * Step 2: Translate back by 50% of own size
-     * Result: Perfectly centered regardless of size
-     */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
-    font-weight: bold;
-    font-size: 12px;
-    color: #2d3436;
-    z-index: 2;          /* Appear above colored bar */
-    
-    /* Text Shadow for Readability
-     * White glow ensures text readable on any background
-     */
-    text-shadow: 0 0 3px white;
+    font-weight: 700;
+    font-size: 13px;
+    color: #667eea;
+    z-index: 2;
+    text-shadow: 0 0 8px rgba(255,255,255,0.8);
 }
 
 /**
  * Streak Section
- * Container for streak cards (Day Streak, Completed, Total XP)
+ * Responsive cards layout
  */
 .streak-section {
-    display: flex;
-    gap: 15px;
-    margin-top: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
 }
 
 /**
  * Streak Card
- * Individual stat card with gradient background
- * flex: 1 makes all cards equal width
+ * Enhanced with better gradients and interactions
  */
 .streak-card {
-    flex: 1;  /* Equal distribution of space */
-    background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-    padding: 15px;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    padding: 16px;
+    border-radius: 16px;
     text-align: center;
+    border: 2px solid rgba(255,255,255,0.6);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 20px rgba(250, 177, 160, 0.2);
+}
+
+.streak-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(250, 177, 160, 0.35);
 }
 
 /**
- * Fire Streak Card Modifier
- * Special red/orange gradient for day streak card
- * .fire is modifier class (BEM methodology)
+ * Fire Streak Card - Special styling
  */
 .streak-card.fire {
-    background: linear-gradient(135deg, #ff9a76 0%, #ff6b6b 100%);
+    background: linear-gradient(135deg, #ff7675 0%, #ff9a76 100%);
+    box-shadow: 0 8px 20px rgba(255, 118, 117, 0.3);
 }
 
 /**
  * Streak Number
- * Large number in streak card
+ * Large, bold typography
  */
 .streak-number {
-    font-size: 32px;
-    font-weight: bold;
-    color: #2d3436;
+    font-size: clamp(28px, 8vw, 40px);
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 /**
  * Streak Label
- * Descriptive text below number (e.g., "🔥 Day Streak")
  */
 .streak-label {
     font-size: 12px;
-    color: #2d3436;
+    color: rgba(255,255,255,0.9);
     text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 4px;
 }
 
 /* ==========================================
@@ -578,115 +658,113 @@ header h1 {
 
 /**
  * Achievements Container
- * White card housing achievement grid
+ * Modern card with gradient background
  */
 .achievements {
     background: white;
-    border-radius: 20px;
-    padding: 20px;
+    border-radius: 24px;
+    padding: clamp(20px, 5vw, 30px);
     margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+    animation: fadeInUp 0.6s ease 0.3s both;
+}
+
+.achievements h3 {
+    font-size: clamp(18px, 5vw, 24px);
+    color: #667eea;
+    margin-bottom: 16px;
+    font-weight: 700;
 }
 
 /**
  * Achievement Grid
- * Responsive grid that auto-fills columns based on space
- * 
- * CSS Grid Advanced Pattern:
- * - repeat() = repeat a pattern
- * - auto-fill = create as many columns as will fit
- * - minmax(100px, 1fr) = minimum 100px wide, maximum equal fraction
+ * Responsive auto-fill grid
  */
 .achievement-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
 }
 
 /**
  * Individual Achievement Card
- * Can be in "unlocked" or "locked" state
- * Base styles apply to both states
  */
 .achievement {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 10px;
+    background: #f5f7fa;
+    padding: 16px;
+    border-radius: 16px;
     text-align: center;
-    
-    /* Transition ALL properties smoothly
-     * Makes any style change animated (hover, unlock, etc.)
-     */
-    transition: all 0.3s;
-    
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     cursor: pointer;
     position: relative;
+    border: 2px solid #e8ebff;
+    overflow: hidden;
+}
+
+.achievement:hover:not(.locked) {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
 }
 
 /**
- * Unlocked Achievement State
- * Gold gradient and shadow for unlocked achievements
- * State modifier class (applied via JavaScript)
+ * Unlocked Achievement
  */
 .achievement.unlocked {
     background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-    box-shadow: 0 5px 15px rgba(253, 203, 110, 0.4);
-    
-    /* Play bounce animation on unlock */
+    box-shadow: 0 8px 25px rgba(253, 203, 110, 0.3);
+    border-color: #f9ca24;
     animation: unlockBounce 0.5s ease;
 }
 
 /**
+ * Locked Achievement
+ */
+.achievement.locked {
+    opacity: 0.35;
+    filter: grayscale(100%);
+}
+
+/**
  * Unlock Bounce Animation
- * Celebratory bounce when achievement is unlocked
- * One-time animation (not infinite)
  */
 @keyframes unlockBounce {
     0%, 100% { 
         transform: scale(1); 
     }
     50% { 
-        transform: scale(1.1);  /* Grow 10% in middle */
+        transform: scale(1.15);
     }
 }
 
 /**
- * Locked Achievement State
- * Grayed out and desaturated for locked achievements
- */
-.achievement.locked {
-    opacity: 0.4;              /* Semi-transparent */
-    filter: grayscale(100%);   /* Remove all color (black & white) */
-}
-
-/**
  * Achievement Icon
- * Emoji icon for achievement
+ * Larger, more prominent
  */
 .achievement-icon {
-    font-size: 40px;
-    margin-bottom: 5px;
+    font-size: 44px;
+    margin-bottom: 8px;
+    display: block;
 }
 
 /**
  * Achievement Name
- * Title of achievement (e.g., "First Steps", "Legend")
  */
 .achievement-name {
-    font-size: 11px;
-    font-weight: bold;
+    font-size: 12px;
+    font-weight: 700;
     color: #2d3436;
+    margin-bottom: 4px;
 }
 
 /**
  * Achievement Description
- * Requirement text (e.g., "Complete 5 tasks")
  */
 .achievement-desc {
-    font-size: 9px;
+    font-size: 10px;
     color: #636e72;
-    margin-top: 3px;
 }
 
 /* ==========================================
@@ -695,324 +773,330 @@ header h1 {
 
 /**
  * App Card
- * Main white card containing task input and list
- * Largest shadow for maximum elevation
+ * Main white card with enhanced modern design
  */
 .app-card {
     background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);  /* Dramatic shadow */
+    border-radius: 24px;
+    padding: clamp(20px, 5vw, 40px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+    animation: fadeInUp 0.6s ease 0.4s both;
+    overflow: hidden;
 }
 
 /**
  * Input Section
- * Container for task input, priority select, and add button
- * Horizontal layout using Flexbox
+ * Mobile-first responsive layout
  */
 .input-section {
     display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+@media (min-width: 768px) {
+    .input-section {
+        flex-direction: row;
+        align-items: stretch;
+    }
 }
 
 /**
  * Task Input Field
- * Text input for new task entry
+ * Modern input styling
  */
 #taskInput {
-    flex: 1;  /* Grow to fill available space */
-    padding: 15px 20px;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
+    flex: 1;
+    padding: 16px 18px;
+    border: 2px solid #e8ebff;
+    border-radius: 12px;
     font-size: 16px;
-    
-    /* Smooth border and shadow transitions */
-    transition: all 0.3s;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+#taskInput::placeholder {
+    color: #a8b0c0;
+}
+
+#taskInput:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
+    background: #f9faff;
 }
 
 /**
- * Input Focus State
- * Styling when user clicks into input field
- * Provides clear visual feedback
+ * Priority Select
+ * Better styling
  */
-#taskInput:focus {
-    outline: none;           /* Remove default browser outline */
-    border-color: #667eea;   /* Change to brand purple */
-    
-    /* Glow Effect
-     * Creates subtle purple glow around input
-     * box-shadow: h-offset v-offset blur spread color
-     */
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+#prioritySelect {
+    padding: 16px 18px;
+    border: 2px solid #e8ebff;
+    border-radius: 12px;
+    font-size: 16px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+#prioritySelect:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
 }
 
 /**
  * Button Base Styles
- * Shared styles for all buttons
+ * Enhanced with better padding and transitions
  */
 .btn {
-    padding: 15px 30px;
+    padding: 16px 32px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-family: inherit;
+    white-space: nowrap;
 }
 
 /**
- * Primary Button Variant
- * Purple gradient button for main actions
+ * Primary Button
  */
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #a78bfa 100%);
     color: white;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
-/**
- * Primary Button Hover State
- * Lifts button up slightly on hover
- * Creates illusion of pressing down when clicked
- */
 .btn-primary:hover {
-    transform: translateY(-2px);  /* Move up 2px */
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.45);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 /**
  * Task List
- * Unordered list container for tasks
+ * Container for tasks with proper spacing
  */
 .task-list {
-    list-style: none;  /* Remove bullet points */
+    list-style: none;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid #f0f0f0;
 }
 
 /**
  * Task Item
- * Individual task row with checkbox, text, and badges
+ * Enhanced interactive task row
  */
 .task-item {
-    background: #f8f9fa;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    border-radius: 10px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #f0f2ff 100%);
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 12px;
     
-    /* Flexbox Layout
-     * Arranges checkbox, text, badges horizontally
-     */
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     
-    transition: all 0.3s;
-    
-    /* Slide-in Animation on Creation */
-    animation: slideIn 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: slideIn 0.4s ease;
     
     position: relative;
+    border: 2px solid #e8ebff;
+    overflow: hidden;
+}
+
+.task-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+    background: linear-gradient(135deg, #ffffff 0%, #f5f7ff 100%);
 }
 
 /**
  * Slide In Animation
- * Tasks slide in from left when created
  */
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateX(-20px);  /* Start 20px to the left */
+        transform: translateX(-15px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);      /* End at normal position */
+        transform: translateX(0);
     }
-}
-
-/**
- * Task Item Hover State
- * Subtle slide to right on hover
- * Indicates interactivity
- */
-.task-item:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-/**
- * Completing Task Animation State
- * Applied when task checkbox is checked
- * Brief flash before removal
- */
-.task-item.completing {
-    animation: taskComplete 0.5s ease;
 }
 
 /**
  * Task Complete Animation
- * Green flash effect on completion
  */
 @keyframes taskComplete {
     0% { 
-        transform: scale(1); 
+        transform: scale(1);
+        opacity: 1;
     }
     50% { 
         transform: scale(1.05);
-        background: #a8e6cf;  /* Light green flash */
+        background: #a8e6cf;
     }
     100% { 
-        transform: scale(1); 
+        transform: scale(0.95);
+        opacity: 0;
     }
+}
+
+.task-item.completing {
+    animation: taskComplete 0.6s ease;
 }
 
 /**
  * Task Checkbox
- * Styled checkbox for marking tasks complete
  */
 .task-checkbox {
     width: 24px;
     height: 24px;
     cursor: pointer;
-    accent-color: #667eea;  /* Modern CSS property for checkbox color */
+    accent-color: #667eea;
+    flex-shrink: 0;
 }
 
 /**
  * Task Text
- * The actual task description
- * flex: 1 makes it grow to fill space
  */
 .task-text {
     flex: 1;
     font-size: 16px;
     color: #333;
+    font-weight: 500;
 }
 
-/**
- * XP Badge
- * Shows XP reward for completing task
- * Gold gradient pill
- */
-.xp-badge {
+.task-item .xp-badge {
     background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
     color: #2d3436;
-    padding: 4px 10px;
-    border-radius: 12px;  /* Pill shape */
+    padding: 6px 12px;
+    border-radius: 12px;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 700;
+    flex-shrink: 0;
 }
 
-/**
- * Priority Badge
- * Shows task priority (Low/Medium/High)
- * Color varies by priority level
- */
-.priority-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
+.task-item .priority-badge {
+    padding: 6px 10px;
+    border-radius: 8px;
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
+    flex-shrink: 0;
 }
 
-/**
- * High Priority Badge
- * Red background for high priority tasks
- */
 .priority-high {
-    background: #fee;  /* Very light red */
-    color: #c33;       /* Dark red text */
+    background: #ffd6d6;
+    color: #c92e2e;
 }
 
-/**
- * Medium Priority Badge
- * Yellow background for medium priority
- */
 .priority-medium {
-    background: #ffeaa7;
-    color: #d63031;
+    background: #ffe5a0;
+    color: #d97e0a;
 }
 
-/**
- * Low Priority Badge
- * Gray background for low priority
- */
 .priority-low {
-    background: #dfe6e9;
+    background: #e0e0e0;
     color: #636e72;
 }
 
 /**
- * Small Button Base
- * Smaller button variant for inline actions
- */
-.btn-small {
-    padding: 6px 12px;
-    font-size: 14px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-/**
- * Delete Button Variant
- * Red button for delete action
+ * Delete Button
  */
 .btn-delete {
-    background: #dc3545;  /* Bootstrap danger red */
+    background: #ff6b6b;
     color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.btn-delete:hover {
+    background: #ff5252;
+    transform: scale(1.05);
 }
 
 /**
- * Small Button Hover
- * Grows slightly on hover
- */
-.btn-small:hover {
-    transform: scale(1.1);
-}
-
-/**
- * Empty State Display
- * Shown when no tasks exist
- * Centered placeholder text
+ * Empty State
  */
 .empty-state {
     text-align: center;
-    padding: 40px;
-    color: #999;
+    padding: 40px 20px;
+    color: #a8b0c0;
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    color: #667eea;
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    font-size: 16px;
 }
 
 /**
  * Stats Section
- * Container for stat cards (Active Quests, Completed Today)
+ * Container for stat cards with responsive layout
  */
 .stats {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;  /* Wrap to new line on small screens */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 /**
  * Stat Card
- * Individual card showing a statistic
+ * Individual statistic display
  */
 .stat-card {
-    flex: 1;
-    min-width: 150px;  /* Minimum width before wrapping */
-    padding: 15px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    border-radius: 10px;
+    padding: 20px;
+    background: linear-gradient(135deg, #e8ebff 0%, #dfe6e9 100%);
+    border-radius: 16px;
     text-align: center;
+    border: 2px solid rgba(102, 126, 234, 0.1);
+    transition: all 0.3s ease;
 }
 
-/**
- * Stat Card Number
- * Large number in stat card
- */
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+}
+
 .stat-card h3 {
-    font-size: 24px;
+    font-size: clamp(24px, 8vw, 36px);
     color: #667eea;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    font-weight: 900;
+}
+
+.stat-card p {
+    font-size: 13px;
+    color: #636e72;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 /* ==========================================
@@ -1021,263 +1105,226 @@ header h1 {
 
 /**
  * Floating XP Text
- * Animated text that floats up when earning XP
- * Created dynamically via JavaScript
+ * Enhanced animation
  */
 .floating-xp {
-    position: absolute;  /* Positioned relative to task item */
-    font-weight: bold;
-    font-size: 20px;
-    color: #fdcb6e;     /* Gold color */
-    
-    /* Float Up Animation */
-    animation: floatUp 1s ease-out forwards;
-    
-    pointer-events: none;  /* Don't block clicks */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    position: absolute;
+    font-weight: 900;
+    font-size: 24px;
+    color: #fdcb6e;
+    animation: floatUp 1.2s ease-out forwards;
+    pointer-events: none;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.3);
     z-index: 100;
 }
 
 /**
  * Float Up Animation
- * Makes XP text rise and fade out
  */
 @keyframes floatUp {
-    0% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-50px);  /* Move up 50px */
-    }
-}
-
-/**
- * Heart Particle
- * Floating hearts created when petting the pet
- * Generated dynamically via JavaScript
- */
-.heart-particle {
-    position: fixed;     /* Fixed to viewport */
-    font-size: 30px;
-    pointer-events: none;
-    animation: heartFloat 2s ease-out forwards;
-    z-index: 999;       /* Above most content */
-}
-
-/**
- * Heart Float Animation
- * Hearts float up and shrink as they fade
- */
-@keyframes heartFloat {
     0% {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translateY(-100px) scale(0.5);  /* Float up, shrink to 50% */
+        transform: translateY(-60px) scale(0.8);
+    }
+}
+
+/**
+ * Heart Particle
+ */
+.heart-particle {
+    position: fixed;
+    font-size: 32px;
+    pointer-events: none;
+    animation: heartFloat 2.5s ease-out forwards;
+    z-index: 999;
+}
+
+/**
+ * Heart Float Animation
+ */
+@keyframes heartFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-120px) translateX(20px) scale(0.4);
     }
 }
 
 /**
  * Confetti Particle
- * Colorful squares that fall during celebrations
- * Created dynamically by JavaScript
  */
 .confetti {
     position: fixed;
-    width: 10px;
-    height: 10px;
-    background: #f0a830;  /* Gold (overridden by JS with random colors) */
-    animation: confetti-fall 3s linear;
+    width: 12px;
+    height: 12px;
+    background: #f0a830;
+    animation: confetti-fall 3s linear forwards;
     pointer-events: none;
     z-index: 1000;
 }
 
 /**
  * Confetti Fall Animation
- * Confetti pieces fall and rotate
  */
 @keyframes confetti-fall {
     to {
-        transform: translateY(100vh) rotate(360deg);  /* Fall to bottom, spin */
+        transform: translateY(100vh) rotate(720deg);
         opacity: 0;
     }
 }
 
 /**
  * Celebration Overlay
- * Full-screen dark overlay for popup celebrations
- * Hidden by default (display: none)
  */
 .celebration-overlay {
-    /* Fixed Full-Screen Positioning */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    
-    /* Semi-Transparent Black Background */
-    background: rgba(0,0,0,0.8);  /* 80% opacity black */
-    
-    /* Flexbox for Centering Content */
-    display: none;           /* Hidden by default */
-    align-items: center;     /* Vertical center */
-    justify-content: center; /* Horizontal center */
-    
-    z-index: 1000;          /* Above all other content */
-    animation: fadeIn 0.3s; /* Fade in when shown */
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+/**
+ * Celebration Content
+ */
+.celebration-content {
+    background: white;
+    padding: clamp(30px, 10vw, 50px);
+    border-radius: 24px;
+    text-align: center;
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 90%;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+}
+
+/**
+ * Scale In Animation
+ */
+@keyframes scaleIn {
+    from { 
+        transform: scale(0.3); 
+        opacity: 0;
+    }
+    to { 
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /**
  * Fade In Animation
- * Smooth opacity transition
  */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-/**
- * Celebration Content Card
- * White popup card in center of overlay
- */
-.celebration-content {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    animation: scaleIn 0.5s ease;
-    max-width: 90%;  /* Don't exceed 90% of screen width */
-}
-
-/**
- * Scale In Animation
- * Popup grows from small to full size
- * Creates dramatic entrance effect
- */
-@keyframes scaleIn {
-    from { transform: scale(0.5); }  /* Start at 50% size */
-    to { transform: scale(1); }      /* End at full size */
-}
-
-/**
- * Celebration Icon
- * Large emoji at top of popup
- */
 .celebration-icon {
-    font-size: 80px;
+    font-size: clamp(60px, 15vw, 100px);
     margin-bottom: 20px;
+    display: inline-block;
 }
 
-/**
- * Celebration Title
- * Main heading in popup (e.g., "Level Up!")
- */
 .celebration-title {
-    font-size: 32px;
+    font-size: clamp(24px, 8vw, 40px);
     color: #667eea;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-weight: 800;
 }
 
 /**
  * Sound Toggle Button
- * Fixed position button to mute/unmute sounds
  */
 .sound-toggle {
-    /* Fixed Positioning */
     position: fixed;
     top: 20px;
     right: 20px;
     
-    /* Circular Button */
     background: white;
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     
-    /* Centering Icon */
     display: flex;
     align-items: center;
     justify-content: center;
     
     font-size: 24px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     z-index: 100;
-    transition: all 0.3s;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: none;
 }
 
-/**
- * Sound Toggle Hover
- * Slight enlargement on hover
- */
 .sound-toggle:hover {
-    transform: scale(1.1);
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.sound-toggle:active {
+    transform: scale(0.95);
 }
 
 /* ==========================================
-   8. RESPONSIVE DESIGN - Mobile Adaptations
+   8. RESPONSIVE DESIGN - Mobile-First Approach
    ========================================== */
 
 /**
- * Mobile Breakpoint
- * Media query activates for screens 600px wide or smaller
- * Adjusts layout for mobile devices
- * 
- * @media (max-width: 600px) = only apply styles if screen ≤ 600px
+ * Tablet Breakpoint
+ * Adjustments for tablets and small desktops
  */
-@media (max-width: 600px) {
-    /**
-     * Smaller Pet on Mobile
-     * 80px instead of 120px to fit smaller screens
-     */
+@media (min-width: 768px) {
+    header h1 {
+        font-size: 3.5em;
+    }
+    
     .pet-display {
-        font-size: 80px;
+        font-size: 160px;
     }
     
-    /**
-     * Vertical Input Layout on Mobile
-     * Stack input, select, and button vertically
-     * Instead of horizontal row on desktop
-     */
-    .input-section {
-        flex-direction: column;  /* Change from row to column */
+    .pet-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
     }
     
-    /**
-     * Full-Width Priority Select on Mobile
-     */
-    #prioritySelect {
-        width: 100%;
-    }
-    
-    /**
-     * Vertical Level Section on Mobile
-     * Stack badge and info vertically
-     */
     .level-section {
-        flex-direction: column;
+        gap: 32px;
     }
     
-    /**
-     * Vertical Streak Cards on Mobile
-     * Stack three cards vertically
-     */
     .streak-section {
-        flex-direction: column;
+        grid-template-columns: repeat(3, 1fr);
     }
     
-    /**
-     * Smaller Achievement Grid on Mobile
-     * Reduce minimum column width from 100px to 80px
-     * Fits more columns on narrow screens
-     */
+    .app-card {
+        padding: 40px;
+    }
+}
+
+/**
+ * Desktop Breakpoint
+ * Larger screens styling
+ */
+@media (min-width: 1024px) {
+    body {
+        padding: 32px;
+    }
+    
     .achievement-grid {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
     }
 }
 
