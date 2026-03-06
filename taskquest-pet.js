@@ -566,14 +566,14 @@ function checkPetEvolution() {
  * @returns {void}
  * 
  * Normal Decay (per hour):
- * - Hunger: +20
- * - Energy: -10
- * - Happiness: -8 base, -5 additional if very hungry (total up to -13)
- * 
+ * - Hunger: +8
+ * - Energy: -4
+ * - Happiness: -3 base, -2 additional if very hungry (total up to -5)
+ *
  * Hibernation Decay (per hour):
- * - Hunger: +20 (normal)
- * - Energy: -5 (slower recovery)
- * - Happiness: -15 (faster, pet is sad)
+ * - Hunger: +8 (normal)
+ * - Energy: -2 (slower drain while sleeping)
+ * - Happiness: -5 (faster, pet is sad)
  */
 function updatePetNeeds() {
     const now = Date.now();
@@ -586,22 +586,22 @@ function updatePetNeeds() {
         const decayMultiplier = minutesSinceLastUpdate / 60; // Convert to hours
         
         if (gameData.petHibernating) {
-            // Hibernation decay (slower energy recovery)
-            gameData.petHunger = Math.min(100, gameData.petHunger + (20 * decayMultiplier));
-            gameData.petEnergy = Math.max(0, gameData.petEnergy - (5 * decayMultiplier));
-            gameData.petHappiness = Math.max(0, gameData.petHappiness - (15 * decayMultiplier));
-            
+            // Hibernation decay (slow drain while sleeping)
+            gameData.petHunger = Math.min(100, gameData.petHunger + (8 * decayMultiplier));
+            gameData.petEnergy = Math.max(0, gameData.petEnergy - (2 * decayMultiplier));
+            gameData.petHappiness = Math.max(0, gameData.petHappiness - (5 * decayMultiplier));
+
         } else {
             // Normal active mode decay
-            gameData.petHunger = Math.min(100, gameData.petHunger + (20 * decayMultiplier));
-            gameData.petEnergy = Math.max(0, gameData.petEnergy - (10 * decayMultiplier));
-            
-            // Base happiness decay (forces player to pet regularly)
-            gameData.petHappiness = Math.max(0, gameData.petHappiness - (8 * decayMultiplier));
-            
+            gameData.petHunger = Math.min(100, gameData.petHunger + (8 * decayMultiplier));
+            gameData.petEnergy = Math.max(0, gameData.petEnergy - (4 * decayMultiplier));
+
+            // Base happiness decay (encourages regular task completion)
+            gameData.petHappiness = Math.max(0, gameData.petHappiness - (3 * decayMultiplier));
+
             // Additional penalty for being very hungry
             if (gameData.petHunger > 70) {
-                gameData.petHappiness = Math.max(0, gameData.petHappiness - (5 * decayMultiplier));
+                gameData.petHappiness = Math.max(0, gameData.petHappiness - (2 * decayMultiplier));
             }
         }
         
